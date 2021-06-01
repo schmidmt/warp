@@ -3,7 +3,6 @@ use std::cell::RefCell;
 use std::mem;
 use std::net::SocketAddr;
 
-use http;
 use hyper::Body;
 
 use crate::Request;
@@ -21,7 +20,7 @@ pub(crate) fn is_set() -> bool {
     ROUTE.is_set()
 }
 
-pub(crate) fn with<F, R>(func: F) -> R
+pub fn with<F, R>(func: F) -> R
 where
     F: FnOnce(&mut Route) -> R,
 {
@@ -29,7 +28,7 @@ where
 }
 
 #[derive(Debug)]
-pub(crate) struct Route {
+pub struct Route {
     body: BodyState,
     remote_addr: Option<SocketAddr>,
     req: Request,
@@ -97,7 +96,6 @@ impl Route {
         let path = self.req.uri().path();
         if path.is_empty() {
             // malformed path
-            return;
         } else if path.len() == index {
             self.segments_index = index;
         } else {
